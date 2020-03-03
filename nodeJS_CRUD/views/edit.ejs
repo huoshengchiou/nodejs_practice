@@ -1,0 +1,114 @@
+<%- include('parts/header.ejs') %>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div id="info" class="alert alert-success" role="alert" style="display: none">
+
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-dark">
+        <thead>
+            <tr>
+                <th scope="col" colspan="2"><%= row.mbNick%> <span>，你好</span><br>
+                    <span class="small"><%=row.mbDes%></span>
+
+
+                </th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            <form name="form1" method="POST" enctype="multipart/form-data" onsubmit="return editProcess();">
+                <tr>
+                    <th scope="row">真實姓名</th>
+                    <td><input type="text" name="mbName" value="<%=row.mbName%>"></td>
+                </tr>
+                <tr>
+                    <th scope="row">Email</th>
+                    <td><%=row.mbEmail%></td>
+                </tr>
+                <tr>
+                    <th scope="row">玩家暱稱</th>
+                    <td><input type="text" name="mbNick" value="<%=row.mbNick%>"></td>
+                </tr>
+                <tr>
+                    <th scope="row">性別</th>
+                    <td>
+                        <%if(row.mbGender==='Female'){%>
+                        <input type="radio" id="mbGender" name="mbGender" value="Female" checked>Female
+                        <input type="radio" id="mbGender" name="mbGender" value="Male">Male</td>
+                    <%}else{%> <input type="radio" id="mbGender" name="mbGender" value="Female">Female
+                    <input type="radio" id="mbGender" name="mbGender" value="Male" checked>Male<%}%></td>
+            
+          </tr>
+          <tr>
+            <th scope="row">生日</th>
+            <td><%=row.mbBd%></td>
+                </tr>
+                <tr>
+                    <th scope="row">來自國度</th>
+                    <td><input type="text" name="mbCountry" value="<%=row.mbCountry%>"></td>
+                </tr>
+
+                <tr>
+                    <th scope="row">手機號碼</th>
+                    <td><input type="text" name="mbPh" value="<%=row.mbPh%>"></td>
+                </tr>
+                <tr>
+                    <th scope="row">發票載具</th>
+                    <td><input type="text" name="mbInvoice" value="<%=row.mbInvoice%>"></td>
+                </tr>
+                <tr>
+                    <th scope="row">玩家自述</th>
+                    <td><textarea name="mbDes" id="mbDes" cols="30" rows="10"><%=row.mbDes%></textarea></td>
+                </tr>
+                <tr>
+                    <input type="hidden" name="mbId" value="<%= row.mbId%>">
+                    <th colspan="2"><input type="submit" value="確認修改"></th>
+                </tr>
+            </form>
+            <a href="http://localhost:3000/tandem-login/list">返回上頁</a>
+        </tbody>
+
+    </table>
+</div>
+<script>
+    const info = $('#info');
+    function editProcess() {
+        info.hide();
+        //TODO 格式檢查
+        // credentials: 'include'
+        // const fd = new FormData(document.getElementById('form1'));
+        // console.log(JSON.stringify(fd));
+        fetch('http://localhost:3000/tandem-login/edit/<%=row.mbId%>',
+            {
+                method: 'POST',
+                body:new FormData(document.form1),
+                credentials: 'include'
+            })
+            .then(r => r.json())
+            .then(obj => {
+                if(obj.success){
+                    info.text('修改成功');
+                    info.removeClass('alert-danger').addClass('alert-success');
+                } else {
+                    info.text(obj.msg);
+                    info.removeClass('alert-success').addClass('alert-danger');
+                }
+                info.slideDown();
+            })
+
+            // 調整UI表現
+
+        return false;
+    }    
+</script>
+
+
+
+<%- include('parts/footer.ejs') %>

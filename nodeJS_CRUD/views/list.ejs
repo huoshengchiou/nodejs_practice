@@ -1,0 +1,97 @@
+<%- include('parts/header.ejs') %>
+
+
+<div class="container">
+    <header>
+        <%if(locals.loginEmail){%>
+            <h4><%=loginNick%><span>，歡迎回來</span></h1>
+            <span><a href="http://localhost:3000/tandem-login/logout">登出</a></span>
+        <%}%>
+    </header>
+    <nav>
+        <ul class="pagination">
+            <li class="page-item <%= 1===page ? 'disabled' : ''%>"><a class="page-link"
+                    href="/tandem-login/list/<%=page-1%>">Previous</a>
+
+                <% for (let i = 1; i<=allPages; i++){%>
+            <li class="page-item <%= i===page ? 'active' : '' %>">
+                <a class="page-link" href="/tandem-login/list/<%= i %>"><%= i %></a>
+            </li>
+            <%}%>   
+            <li class="page-item <%=page===allPages ? 'disabled' : ''%>"><a class="page-link"
+                href="/tandem-login/list/<%= page+1 %>">Next</a></li>
+        </ul>
+    </nav>
+    <div class="row">
+        <div class="col">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">編輯</th>
+                        <th scope="col">會員編號</th>
+                        <th scope="col">會員密碼</th>
+                        <th scope="col">真實名稱</th>
+                        <th scope="col">玩家暱稱</th>
+                        <th scope="col">來自國度</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">綁定手機</th>
+                        <th scope="col">發票載具</th>
+                        <th scope="col">性別</th>
+                        <th scope="col">生日</th>
+                        <th scope="col">自我描述</th>
+                        <th scope="col">登入狀態</th>
+                        <th scope="col">刪除</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(let i=0; i<rows.length; i++){ %>
+                    <tr>
+                        <td><a href="/tandem-login/edit/<%= rows[i].mbId %>">
+                                編輯
+                            </a></td>
+                        <td><%= rows[i].mbId %></td>
+                        <td><%= rows[i].mbPassword %></td>
+                        <td><%= rows[i].mbName %></td>
+                        <td><%= rows[i].mbNick %></td>
+                        <td><%= rows[i].mbCountry %></td>
+                        <td><%= rows[i].mbEmail %></td>
+                        <td><%= rows[i].mbPh %></td>
+                        <td><%= rows[i].mbInvoice %></td>
+                        <td><%= rows[i].mbGender %></td>
+                        <td><%= rows[i].mbBd %></td>
+                        <td><%= rows[i].mbDes %></td>
+                        <td><%= rows[i].mbOnline %></td>
+                        <td>
+
+                            <a class="remove-link" href="javascript:removeItem(<%= rows[i].mbId %>)">
+                                刪除
+                            </a>
+
+                        </td>
+                    </tr>
+                    <% } %>
+
+        </div>
+        <script>
+            function removeItem(mbId) {
+                if (confirm(`確定刪除編碼${mbId}的資料嗎?`)) {
+                    fetch('/tandem-login/delete/' + mbId, {
+                        method: 'POST'
+                    })
+                        .then(r => r.json())
+                        .then(obj => {
+                            console.log(obj);
+                            location.reload();
+                        })
+                }
+
+
+                
+            }
+
+        </script>
+
+
+
+
+        <%- include('parts/footer.ejs') %>

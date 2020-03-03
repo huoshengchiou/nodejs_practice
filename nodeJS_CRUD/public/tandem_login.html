@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        /* #mbEmail.active {
+            border: 2px solid red;
+        }
+
+        #emailAlt {
+            display: none;
+            color: red;
+        } */
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form method="POST" name="loginform" enctype="multipart/form-data" onsubmit="return loginCheck()">
+            <h1>會員登入<span id="status"></span></h1>
+            <div class="form-group">
+                <label for="">Email address</label>
+                <input type="email" class="form-control" id="mbEmail" name="mbEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" class="form-control" id="mbPassword" name="mbPassword" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">登入</button>
+        </form>
+        <br>
+        <span><a href="http://localhost:3000/tandem_register.html">會員註冊</a></span>
+        <div id="show"></div>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script>
+        //TODO input check
+
+        let email_pattern = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+
+        let ctinputEmail = document.querySelector('#mbEmail').value;
+        
+        let ctinputPwd = document.querySelector('#mbPassword').value;
+       
+    //    $('#mbEmail').blur(function(){
+    //      console.log($(this).val());
+         
+    //    })
+
+
+        function loginCheck() {
+            // if (!email_pattern.test(ctinputEmail)){
+            //     $('#status').text('帳號格式不正確');
+            //     setTimeout(location.reload(),5000);
+            //     // 要再優化重讀
+            // }
+           
+            
+
+            fetch('http://localhost:3000/tandem-login/check', {
+                method: 'POST',
+                body: JSON.stringify({
+                    ctEmail: document.querySelector('#mbEmail').value,
+                    ctPwd: document.querySelector('#mbPassword').value,
+                    credentials: 'include'
+                }),
+                // fetch只能用json較為方便
+                headers: {
+                    'content-type': 'application/json'
+                }
+            })
+
+                .then(r => r.json())
+                .then(obj => {
+                    if(obj.success){
+                        $('#status').text(obj.msg);
+                        // 轉頁設定完成
+                        setTimeout(function(){
+                            window.location.href="http://localhost:3000/tandem-login/list";
+                        },2000)
+                        
+                        // window.location.replace('http://localhost:3000/tandem-login/list');
+                    } else {
+                        $('#status').text(obj.error);
+                        setTimeout(function(){
+                            window.location.href="http://localhost:3000/tandem_login.html";
+                        },2000)
+                        ;
+                            // 轉頁設定調整
+
+                    }
+                    console.log(obj);
+                })
+
+            return false;
+        }
+
+    </script>
+</body>
+
+</html>

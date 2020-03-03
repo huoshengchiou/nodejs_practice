@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tandem_register</title>
+    <link rel="stylesheet" href="./bootstrap-4.4.1-dist/css/bootstrap.min.css">
+
+</head>
+
+
+<body>
+    <div class="container">
+        <h1>註冊會員</h1>
+        <form name="form1" method="POST" enctype="multipart/form-data" onsubmit="return regiCheck();">
+
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="inputEmail4"><span id="confirmEmail">Email</span></label>
+                    <input type="email" class="form-control" id="mbEmail" name="mbEmail" required>
+                </div>
+                <div class="form-group col-md-12">
+                    <label for="inputPassword4"><span id="confirmPwd">Password</span></label>
+                    <input type="password" class="form-control" id="mbPassword" name="mbPassword" required>
+                </div>
+                <!-- <span id="rule1">至少1個大寫字母</span>
+                <span id="rule2">至少1個小寫英文字母</span>
+                <span id="rule3">至少1位數字</span>
+                <span id="rule4">至少有1個特殊字符</span> -->
+            </div>
+            <div class="form-group">
+                <label for="inputPassword4"><span id="confirmPwd2">Confirm Password</span></label>
+                <input type="password" class="form-control" id="mbPassword2" name="mbPassword2" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">註冊</button>
+        </form>
+        <a href="http://localhost:3000/tandem_login.html">返回登入頁</a>
+        <div id="info"></div>
+
+    </div>
+
+
+
+
+
+    <script src="./JQ/jquery-3.4.1.min.js"></script>
+    <script src="./bootstrap-4.4.1-dist/js/bootstrap.min.js"></script>
+    <script>
+        let email_pattern = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+
+        $('#mbEmail').on('keyup', function () {
+            // console.log($(this).val());
+            if (email_pattern.test($(this).val())) {
+                $('#confirmEmail').css('color', 'green');
+            } else {
+                $('#confirmEmail').css('color', 'red');
+            }
+        })
+       
+
+        $('#mbPassword2').on('keyup', function(){
+          if($(this).val() === $('#mbPassword').val()){
+              $('#confirmPwd').css('color','green');
+              $('#confirmPwd2').css('color','green');
+          }else{
+            $('#confirmPwd').css('color','red');
+              $('#confirmPwd2').css('color','red');
+          }
+        })
+
+
+        
+
+
+
+        function regiCheck() {
+            //TODO 格式檢查
+            fetch('http://localhost:3000/tandem-login/register', {
+                // method: 'POST',
+                // body: JSON.stringify({
+                //     ctEmail: document.querySelector('#mbEmail').value,
+                //     ctPwd: document.querySelector('#mbPassword').value,
+
+                // }),
+                // credentials: 'include',
+                // // fetch只能用json較為方便
+                // headers: {
+                //     'content-type': 'application/json'}
+                method: 'POST',
+                body: new FormData(document.form1),
+                credentials: 'include'
+
+                
+            })
+
+                .then(r => r.json())
+                .then(obj => {
+                    if(obj.sucess){
+                        console.log(obj);
+                    $('#info').text(obj.msg);
+                    setTimeout(function(){
+                            window.location.href="http://localhost:3000/tandem-login/list";
+                        },2000)
+                    
+                    }else{
+                        $('#info').text(obj.error);
+                        console.log(obj.r);
+                    }
+
+                    // if(obj.success){
+                    //     $('#status').text(obj.success);
+                    //     window.location.replace("http://www.w3schools.com");
+                    //     // location.reload();
+                    // } else {
+                    //     $('#status').text(obj.msg);
+                    // }
+                    // console.log(obj);
+                })
+
+            return false;
+        }
+
+
+
+
+    </script>
+</body>
+
+</html>
