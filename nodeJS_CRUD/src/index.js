@@ -108,6 +108,8 @@ app.post("/fgpwd", (req, res) => {
 
 // app.use('/tandem/login', require(__dirname+'/routers/login-test') );
 
+app.use("/tandem/member", require(__dirname + "/routers/Tandemlog"));
+
 app.get("/", (req, res) => {
   console.log(req.body);
   res.json({ Hello你到囉: "Hello" });
@@ -117,7 +119,7 @@ app.get("/", (req, res) => {
 });
 app.post("/test", (req, res) => {
   console.log(req.body);
-  res.json(req.body);
+  return res.json(req.body);
   //   const a = { name: "sheng" };
   //   res.json(a);
   //   // res.render('test.ejs',{name:'sheng'});
